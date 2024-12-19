@@ -13,7 +13,6 @@ import openfl.filters.BitmapFilterType;
 import lime._internal.graphics.ImageDataUtil; // TODO
 
 #end
-
 #if !openfl_debug
 @:fileXml('tags="haxe,release"')
 @:noDebug
@@ -120,7 +119,8 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	}
 	#end
 
-	public function new(distance:Float = 4.0, angle:Float = 45, highlightColor:UInt = 0xFFFFFF, highlightAlpha:Float = 1.0, shadowColor:UInt = 0x000000, shadowAlpha:Float = 1.0, blurX:Float = 4.0, blurY:Float = 4.0, strength:Float = 1, quality:Int = 1, type:String = "inner", knockout:Bool = false)
+	public function new(distance:Float = 4.0, angle:Float = 45, highlightColor:UInt = 0xFFFFFF, highlightAlpha:Float = 1.0, shadowColor:UInt = 0x000000,
+			shadowAlpha:Float = 1.0, blurX:Float = 4.0, blurY:Float = 4.0, strength:Float = 1, quality:Int = 1, type:String = "inner", knockout:Bool = false)
 	{
 		super();
 		this.distance = distance;
@@ -128,16 +128,16 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 		this.highlightColor = highlightColor;
 		this.highlightAlpha = highlightAlpha;
 		this.shadowColor = shadowColor;
-		this.shadowAlpha = shadowAlpha;	
+		this.shadowAlpha = shadowAlpha;
 		this.blurX = blurX;
 		this.blurY = blurY;
 		this.quality = quality;
 		this.strength = strength;
 		this.knockout = knockout;
 		this.type = type;
-	
+
 		__updateSize();
-	
+
 		__needSecondBitmapData = true;
 		__preserveObject = true;
 		__renderDirty = true;
@@ -145,11 +145,11 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 
 	public override function clone():BitmapFilter
 	{
-		return new BevelFilter(__distance, __angle, __highlightColor, __highlightAlpha, __shadowColor, __shadowAlpha, __blurX, __blurY, __strength, __quality, __type, __knockout);
+		return new BevelFilter(__distance, __angle, __highlightColor, __highlightAlpha, __shadowColor, __shadowAlpha, __blurX, __blurY, __strength, __quality,
+			__type, __knockout);
 	}
 
-	@:noCompletion private override function __applyFilter(bitmapData:BitmapData, sourceBitmapData:BitmapData, sourceRect:Rectangle,
-			destPoint:Point):BitmapData
+	@:noCompletion private override function __applyFilter(bitmapData:BitmapData, sourceBitmapData:BitmapData, sourceRect:Rectangle, destPoint:Point):BitmapData
 	{
 		#if lime
 		var time = Timer.stamp();
@@ -164,7 +164,6 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 
 	@:noCompletion private override function __initShader(renderer:DisplayObjectRenderer, pass:Int, sourceBitmapData:BitmapData):Shader
 	{
-
 		#if !macro
 		var blurPass = pass;
 		var numBlurPasses = __horizontalPasses + __verticalPasses;
@@ -184,10 +183,9 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 				shader.uRadius.value[1] = blurY * scale;
 			}
 			return shader;
-		}		
-		
-		__bevelShader.sourceBitmap.input = sourceBitmapData;
+		}
 
+		__bevelShader.sourceBitmap.input = sourceBitmapData;
 		#end
 
 		return __bevelShader;
@@ -202,7 +200,7 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	@:noCompletion private function set_blurX(value:Float):Float
 	{
 		value = value < 0 ? 0 : value;
-		value = value > 255 ? 255 : value;		
+		value = value > 255 ? 255 : value;
 		if (value != __blurX)
 		{
 			__blurX = value;
@@ -306,7 +304,7 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	@:noCompletion private function set_shadowAlpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : value;
-		value = value > 1 ? 1 : value;	
+		value = value > 1 ? 1 : value;
 		if (value != __shadowAlpha)
 		{
 			__shadowAlpha = value;
@@ -324,7 +322,7 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	@:noCompletion private function set_blurY(value:Float):Float
 	{
 		value = value < 0 ? 0 : value;
-		value = value > 255 ? 255 : value;		
+		value = value > 255 ? 255 : value;
 		if (value != __blurY)
 		{
 			__blurY = value;
@@ -343,7 +341,7 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	{
 		value = value < 1 ? 1 : value;
 		value = value > 15 ? 15 : value;
-		
+
 		__horizontalPasses = (__blurX <= 0) ? 0 : Math.round(__blurX * (value / 4));
 		__verticalPasses = (__blurY <= 0) ? 0 : Math.round(__blurY * (value / 4));
 
@@ -380,16 +378,16 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	{
 		if (value != __type)
 		{
-		switch(value)
-		{
-			case "inner":
-				__bevelShader.uBevelType.value[0] = 0.0;
-			case "outer":
-				__bevelShader.uBevelType.value[0] = 1.0;
-			default:
-				__bevelShader.uBevelType.value[0] = 2.0;
-				value="full";
-		}
+			switch (value)
+			{
+				case "inner":
+					__bevelShader.uBevelType.value[0] = 0.0;
+				case "outer":
+					__bevelShader.uBevelType.value[0] = 1.0;
+				default:
+					__bevelShader.uBevelType.value[0] = 2.0;
+					value = "full";
+			}
 			__type = value;
 			__renderDirty = true;
 		}
@@ -417,37 +415,36 @@ import lime._internal.graphics.ImageDataUtil; // TODO
 	{
 		var rad:Float = __angle * Math.PI / 180;
 		__bevelShader.uTransformX.value[0] = (__distance * Math.cos(rad));
-		__bevelShader.uTransformY.value[0] = (__distance * Math.sin(rad));	
+		__bevelShader.uTransformY.value[0] = (__distance * Math.sin(rad));
 	}
 
 	@:noCompletion private function __updateColors():Void
 	{
-			var r:UInt = (__highlightColor >> 16) & 0xFF;
-			var g:UInt = (__highlightColor >> 8) & 0xFF;
-			var b:UInt = __highlightColor & 0xFF;		
-			__bevelShader.uLightColor.value[0] = (r / 255) * __highlightAlpha;
-			__bevelShader.uLightColor.value[1] = (g / 255) * __highlightAlpha;
-			__bevelShader.uLightColor.value[2] = (b / 255) * __highlightAlpha;
-			__bevelShader.uLightColor.value[3] = __highlightAlpha;
-		
-			r = (__shadowColor >> 16) & 0xFF;
-			g = (__shadowColor >> 8) & 0xFF;
-			b = __shadowColor & 0xFF;		
-			__bevelShader.uShadowColor.value[0] = (r / 255) * __shadowAlpha;
-			__bevelShader.uShadowColor.value[1] = (g / 255) * __shadowAlpha;
-			__bevelShader.uShadowColor.value[2] = (b / 255) * __shadowAlpha;
-			__bevelShader.uShadowColor.value[3] = __shadowAlpha;
+		var r:UInt = (__highlightColor >> 16) & 0xFF;
+		var g:UInt = (__highlightColor >> 8) & 0xFF;
+		var b:UInt = __highlightColor & 0xFF;
+		__bevelShader.uLightColor.value[0] = (r / 255) * __highlightAlpha;
+		__bevelShader.uLightColor.value[1] = (g / 255) * __highlightAlpha;
+		__bevelShader.uLightColor.value[2] = (b / 255) * __highlightAlpha;
+		__bevelShader.uLightColor.value[3] = __highlightAlpha;
+
+		r = (__shadowColor >> 16) & 0xFF;
+		g = (__shadowColor >> 8) & 0xFF;
+		b = __shadowColor & 0xFF;
+		__bevelShader.uShadowColor.value[0] = (r / 255) * __shadowAlpha;
+		__bevelShader.uShadowColor.value[1] = (g / 255) * __shadowAlpha;
+		__bevelShader.uShadowColor.value[2] = (b / 255) * __shadowAlpha;
+		__bevelShader.uShadowColor.value[3] = __shadowAlpha;
 	}
 
 	@:noCompletion private function __updateSize():Void
 	{
-		var offsetX:Int = __type!="inner" ? Math.ceil(__distance * Math.cos(__angle * Math.PI / 180)) : 0;
-		var offsetY:Int = __type!="inner" ? Math.ceil(__distance * Math.sin(__angle * Math.PI / 180)) : 0;
+		var offsetX:Int = __type != "inner" ? Math.ceil(__distance * Math.cos(__angle * Math.PI / 180)) : 0;
+		var offsetY:Int = __type != "inner" ? Math.ceil(__distance * Math.sin(__angle * Math.PI / 180)) : 0;
 		__topExtension = Math.ceil((offsetY < 0 ? -offsetY : 0) + __blurY);
 		__bottomExtension = Math.ceil((offsetY > 0 ? offsetY : 0) + __blurY);
 		__leftExtension = Math.ceil((offsetX < 0 ? -offsetX : 0) + __blurX);
 		__rightExtension = Math.ceil((offsetX > 0 ? offsetX : 0) + __blurX);
-
 	}
 }
 
@@ -543,7 +540,6 @@ private class BevelShader extends BitmapFilterShader
 				vTextureCoord = openfl_TextureCoord;
 				vTransform = vec2(uTransformX / uTextureSize.x, uTransformY / uTextureSize.y);
 		}")
-	
 	public function new()
 	{
 		super();
@@ -552,7 +548,7 @@ private class BevelShader extends BitmapFilterShader
 		uTransformX.value = [0];
 		uTransformY.value = [0];
 		uLightColor.value = [0, 0, 0, 0];
-		uShadowColor.value = [0, 0, 0, 0];	
+		uShadowColor.value = [0, 0, 0, 0];
 		uBevelType.value = [0.0];
 		uKnockout.value = [false];
 		uStrength.value = [1];
